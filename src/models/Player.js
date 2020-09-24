@@ -7,12 +7,9 @@ class Player {
     this.name = data.name || "";
     this.userName = data.username || "";
     this.DPS = randomizer(-100,-10,5);
-    this.HP = randomizer(0, 10,5);
+    this.HP = randomizer(1, 10,5);
     this.playerUsed = false;
-
   }
-
-
 }
 
 export default Player;
