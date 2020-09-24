@@ -1,12 +1,13 @@
 import React from 'react';
 import axios from 'axios';
+import Player from '../models/Player'
 import './App.css';
 
 class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      users: []
+      players: []
     }
   }
 
@@ -18,7 +19,10 @@ class App extends React.Component {
         url: `${endPoint}`,
         method: "GET"
       });
-      this.setState({users: result.data});
+      result.data.forEach(async (player) => {
+        const newPlayer = new Player(player);
+        await this.setState({players: [...this.state.players, newPlayer]});
+      });
     } catch (error) {
       console.log(`Error getting users. ${error}`)
     }
