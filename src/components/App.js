@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import Player from '../models/Player'
 import DialogSpinner from '../utils/dialogSpinner';
-
+import randomizer from '../utils/randomizer';
 import './App.css';
 
 class App extends React.Component {
@@ -12,37 +12,55 @@ class App extends React.Component {
       players: [],
       dialogOpen: false,
       dialogMessage: "",
-      playerOne: new Player(),
-      playerTwo: new Player()
+      playerOne: null,
+      playerTwo: null,
+      firstRandomNum: null,
+      secondRandomNum: null
     }
   }
 
   componentDidMount() {
-    const endPoint = `https://jsonplaceholder.typicode.com/users`;
+    let endPoint = `https://jsonplaceholder.typicode.com/users`;
     
     this.setState({dialogOpen: true, dialogMessage: "Getting players"}, async () => {
       try {
-        const result = await axios ({
+        let result = await axios ({
           url: `${endPoint}`,
           method: "GET"
         });
         result.data.forEach(async (player) => {
-          const newPlayer = new Player(player);
+          let newPlayer = new Player(player);
           await this.setState({players: [...this.state.players, newPlayer]});
         });
+        this.randomizePlayers(true, true);
         this.setState({dialogOpen: false});
       } catch (error) {
         console.log(`Error getting users. ${error}`)
       }
     });
-  
-    this.randomizePlayers(true, true);
-
   }
 
   randomizePlayers(playerOne, playerTwo) {
+    let {players} = this.state;
+    let playersALen = players.length;
+
     if(playerOne && playerTwo) {
-      
+      // generate two random number 
+      let firstNum  = randomizer(0, playersALen - 1, 1);
+      let secondNum = randomizer(0, playersALen - 2, 1);
+
+      // Ensure no same two random number
+      if (secondNum >= firstNum) ++secondNum;
+
+      this.setState({
+        firstRandomNum: firstNum,
+        secondRandomNum: secondNum
+      }, async () => {
+        await this.setState({
+          playerOne: players[this.state.firstRandomNum],
+          playerTwo: players[this.state.secondRandomNum]
+        });
+      });
     } else if (playerOne) {
       // set up playerOne
     } else {
