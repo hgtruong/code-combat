@@ -11,12 +11,15 @@ class App extends React.Component {
     this.state = {
       players: [],
       dialogOpen: false,
-      dialogMessage: ""
+      dialogMessage: "",
+      playerOne: new Player(),
+      playerTwo: new Player()
     }
   }
 
   componentDidMount() {
     const endPoint = `https://jsonplaceholder.typicode.com/users`;
+    
     this.setState({dialogOpen: true, dialogMessage: "Getting players"}, async () => {
       try {
         const result = await axios ({
@@ -32,7 +35,19 @@ class App extends React.Component {
         console.log(`Error getting users. ${error}`)
       }
     });
-    
+  
+    this.randomizePlayers(true, true);
+
+  }
+
+  randomizePlayers(playerOne, playerTwo) {
+    if(playerOne && playerTwo) {
+      
+    } else if (playerOne) {
+      // set up playerOne
+    } else {
+      // set up playerTwo
+    }
   }
 
   render () {
@@ -43,8 +58,22 @@ class App extends React.Component {
       <div className="App">
         <DialogSpinner dialogOpen={dialogOpen} message={dialogMessage}/>
 
-        <div>
-          ALIVE
+        <div className="battle-ground">
+
+          <div className="player-one">
+            Player One
+
+
+          </div>
+
+          <div className="compete-btn">
+            compete-btn
+          </div>
+
+          <div className="player-two">
+            Player Two
+          </div>
+
         </div>
 
       </div>
