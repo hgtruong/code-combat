@@ -1,13 +1,17 @@
 import React from 'react';
 import axios from 'axios';
 import Player from '../models/Player'
+import DialogSpinner from '../utils/dialogSpinner';
+
 import './App.css';
 
 class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      players: []
+      players: [],
+      dialogOpen: false,
+      dialogMessage: ""
     }
   }
 
@@ -29,9 +33,17 @@ class App extends React.Component {
   }
 
   render () {
+    const {dialogOpen, dialogMessage} = this.state;
+
     return (
+      
       <div className="App">
+        <DialogSpinner dialogOpen={dialogOpen} message={dialogMessage}/>
+
+        <div>
           ALIVE
+        </div>
+
       </div>
     )
   }
