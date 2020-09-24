@@ -12,7 +12,7 @@ class App extends React.Component {
 
   async componentDidMount() {
     const endPoint = `https://jsonplaceholder.typicode.com/users`;
-    
+
     try {
       const result = await axios ({
         url: `${endPoint}`,
@@ -25,9 +25,11 @@ class App extends React.Component {
   }
 
   render () {
-    return <div className="App">
-        ALIVE
-    </div>
+    return (
+      <div className="App">
+          ALIVE
+      </div>
+    )
   }
 }
 
