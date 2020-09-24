@@ -36,4 +36,4 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export { DialogSpinner }
+export default DialogSpinner;
