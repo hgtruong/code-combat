@@ -15,21 +15,24 @@ class App extends React.Component {
     }
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const endPoint = `https://jsonplaceholder.typicode.com/users`;
-
-    try {
-      const result = await axios ({
-        url: `${endPoint}`,
-        method: "GET"
-      });
-      result.data.forEach(async (player) => {
-        const newPlayer = new Player(player);
-        await this.setState({players: [...this.state.players, newPlayer]});
-      });
-    } catch (error) {
-      console.log(`Error getting users. ${error}`)
-    }
+    this.setState({dialogOpen: true, dialogMessage: "Getting players"}, async () => {
+      try {
+        const result = await axios ({
+          url: `${endPoint}`,
+          method: "GET"
+        });
+        result.data.forEach(async (player) => {
+          const newPlayer = new Player(player);
+          await this.setState({players: [...this.state.players, newPlayer]});
+        });
+        this.setState({dialogOpen: false});
+      } catch (error) {
+        console.log(`Error getting users. ${error}`)
+      }
+    });
+    
   }
 
   render () {
