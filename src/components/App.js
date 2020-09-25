@@ -3,7 +3,9 @@ import axios from 'axios';
 import Player from '../models/Player'
 import DialogSpinner from '../utils/dialogSpinner';
 import randomizer from '../utils/randomizer';
-import CustomTextField from './CustomTextField';
+import PlayerOne from './PlayerOne/PlayerOne';
+import PlayerTwo from './PlayerTwo/PlayerTwo';
+
 import { 
   Button
 } from "@material-ui/core";
@@ -24,6 +26,7 @@ class App extends React.Component {
     }
 
     this.handleCompeteClick = this.handleCompeteClick.bind(this);
+    this.handleRandomizeClick = this.handleRandomizeClick.bind(this);
   }
 
   componentDidMount() {
@@ -52,6 +55,7 @@ class App extends React.Component {
     let playersALen = players.length;
 
     if(playerOne && playerTwo) {
+
       // generate two random number 
       let firstNum  = randomizer(0, playersALen - 1, 1);
       let secondNum = randomizer(0, playersALen - 2, 1);
@@ -73,6 +77,13 @@ class App extends React.Component {
     } else {
       // set up playerTwo for random btn
     }
+  }
+
+  handleRandomizeClick (event) {
+    // True === playerOne, False === playerTwo
+    let playerToRandomize = event.currentTarget.value;
+    playerToRandomize ? this.randomizePlayers(true, false) : this.randomizePlayers(false, true);
+    
   }
 
   handleCompeteClick () {
@@ -107,70 +118,38 @@ class App extends React.Component {
 
         <div className="battle-ground">
 
-          <div className="player-one">
-            
-            <span>Player One</span>
-              
-            <CustomTextField
-              disabled
-              id="outlined-read-only-p1name"
-              label="Name"
-              value={playerOne.name}
-            />
-
-            <CustomTextField
-              disabled
-              id="outlined-read-only-p1HP"
-              label="HP"
-              variant="outlined"
-              value={playerOne.HP}
-            />
-
-            <CustomTextField
-              disabled
-              id="outlined-read-only-p1DPS"
-              label="DPS"
-              variant="outlined"
-              value={playerOne.DPS}
-            />
+          <div>
+            <PlayerOne playerOne={playerOne}/>
+            <Button 
+              variant="contained" 
+              color="primary"
+              value={true}
+              onClick={this.handleRandomizeClick}
+            >
+              Randomize!
+            </Button>
           </div>
-
+          
           <div className="compete-btn">
-          <Button 
-            variant="contained" 
-            color="secondary"
-            onClick={this.handleCompeteClick}
-          >
-            Compete!
-          </Button>
+            <Button 
+              variant="contained" 
+              color="secondary"
+              onClick={this.handleCompeteClick}
+              >
+              Compete!
+            </Button>
           </div>
 
-          <div className="player-two">
-
-            <span>Player Two</span>
-
-            <CustomTextField
-              disabled
-              id="outlined-read-only-p2name"
-              label="Name"
-              value={playerTwo.name}
-            />
-
-            <CustomTextField
-              disabled
-              id="outlined-read-only-p2HP"
-              label="HP"
-              variant="outlined"
-              value={playerTwo.HP}
-            />
-            
-            <CustomTextField
-              disabled
-              id="outlined-read-only-p2DPS"
-              label="DPS"
-              variant="outlined"
-              value={playerTwo.DPS}
-            />      
+          <div>
+            <PlayerTwo playerTwo={playerTwo}/>
+            <Button 
+              variant="contained" 
+              color="primary"
+              value={false}
+              onClick={this.handleRandomizeClick}
+            >
+              Randomize!
+            </Button>
           </div>
         </div>
       </div>
