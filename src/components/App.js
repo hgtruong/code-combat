@@ -22,7 +22,8 @@ class App extends React.Component {
       studentTwo: new Student(),
       firstRandomNum: null,
       secondRandomNum: null,
-      winner: new Student()
+      winner: new Student(),
+      disabled: false
     }
 
     this.handleCompeteClick = this.handleCompeteClick.bind(this);
@@ -45,47 +46,72 @@ class App extends React.Component {
         this.randomizeStudent(true, true);
         this.setState({dialogOpen: false});
       } catch (error) {
-        console.log(`Error getting users. ${error}`)
+        console.log(`Error getting students. ${error}`)
       }
     });
-  }
-
-  //TODO: Work on randomize player clicked
-  //TODO: Need to remove playerUsed properties in player model
-  randomizeStudent(studentOne, studentTwo) {
-    let {students} = this.state;
-    let studentsALen = students.length;
-
-    if(studentOne && studentTwo) {
-
-      // generate two random number 
-      let firstNum  = randomizer(0, studentsALen - 1, 1);
-      let secondNum = randomizer(0, studentsALen - 2, 1);
-
-      // Ensure no same two random number
-      if (secondNum >= firstNum) ++secondNum;
-
-      this.setState({
-        firstRandomNum: firstNum,
-        secondRandomNum: secondNum
-      }, async () => {
-        await this.setState({
-          studentOne: students[this.state.firstRandomNum],
-          studentTwo: students[this.state.secondRandomNum]
-        });
-      });
-    } else if (studentOne) {
-      // set up studentOne for random btn
-    } else {
-      // set up studentTwo for random btn
-    }
   }
 
   handleRandomizeClick (event) {
     // True === studentOne, False === studentTwo
     let studentToRandomize = event.currentTarget.value;
-    studentToRandomize ? this.randomizeStudent(true, false) : this.randomizeStudent(false, true);
-    
+    studentToRandomize === "one" ? this.randomizeStudent(true, false) : this.randomizeStudent(false, true);
+  }
+
+  async randomizeStudent(sOne, sTwo) {
+    let { students, firstRandomNum, secondRandomNum } = this.state;
+    let studentsALen = students.length;
+    let firstNum, secondNum = null;
+
+    await this.setState({
+      dialogOpen: true,
+      dialogMessage: "Randomizing students",
+      disabled: true
+    });
+
+    if(sOne && sTwo) {
+      // generate two random number 
+      firstNum  = randomizer(0, studentsALen - 1, 1);
+      secondNum = randomizer(0, studentsALen - 2, 1);
+
+      // Ensure no same two random number
+      if (secondNum >= firstNum) ++secondNum;
+
+      await this.setState({
+        firstRandomNum: firstNum,
+        secondRandomNum: secondNum,
+        studentOne: students[firstNum],
+        studentTwo: students[secondNum]
+      });
+
+    } else if (sOne) {
+      // Randomizing first student
+
+      firstNum = firstRandomNum;
+      secondNum = secondRandomNum;
+      let newFirstNum  = randomizer(0, studentsALen - 3, 1);
+
+      if(newFirstNum >= secondNum) ++newFirstNum;
+      if(newFirstNum >= firstNum) ++newFirstNum;
+
+      await this.setState({studentOne: students[newFirstNum]});
+
+    } else {
+      // Randomizing second student
+
+      firstNum = firstRandomNum;
+      secondNum = secondRandomNum;
+      let newSecondNum  = randomizer(0, studentsALen - 3, 1);
+
+      if(newSecondNum >= firstNum) ++newSecondNum;
+      if(newSecondNum >= secondNum) ++newSecondNum;
+
+      await this.setState({studentTwo: students[newSecondNum]});
+    }
+
+    this.setState({
+      dialogOpen: false, 
+      disabled: false
+    });
   }
 
   handleCompeteClick () {
@@ -111,7 +137,7 @@ class App extends React.Component {
   }
 
   render () {
-    const {dialogOpen, dialogMessage, studentOne, studentTwo} = this.state;
+    const {dialogOpen, dialogMessage, studentOne, studentTwo, disabled} = this.state;
 
     return (
       
@@ -123,9 +149,10 @@ class App extends React.Component {
           <div>
             <StudentOne studentOne={studentOne}/>
             <Button 
+              disabled={disabled}
               variant="contained" 
               color="primary"
-              value={true}
+              value="one"
               onClick={this.handleRandomizeClick}
             >
               Randomize!
@@ -133,21 +160,23 @@ class App extends React.Component {
           </div>
           
           <div className="compete-btn">
-            <Button 
+            <Button
+              disabled={disabled}
               variant="contained" 
               color="secondary"
               onClick={this.handleCompeteClick}
-              >
+            >
               Compete!
             </Button>
           </div>
 
           <div>
             <StudentTwo studentTwo={studentTwo}/>
-            <Button 
+            <Button
+              disabled={disabled}
               variant="contained" 
               color="primary"
-              value={false}
+              value="two"
               onClick={this.handleRandomizeClick}
             >
               Randomize!
