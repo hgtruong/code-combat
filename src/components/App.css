@@ -23,7 +23,7 @@
   color: black;
 }
 
-.player-one, .player-two {
+.student-one, .student-two {
   margin: 0 auto;
   display: flex;
   justify-content: space-between;

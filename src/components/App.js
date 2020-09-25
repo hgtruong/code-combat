@@ -1,118 +1,143 @@
 import React from 'react';
 import axios from 'axios';
-import Player from '../models/Player'
+import Student from '../models/Student'
 import DialogSpinner from '../utils/dialogSpinner';
 import randomizer from '../utils/randomizer';
+import StudentOne from './StudentOne/StudentOne';
+import StudentTwo from './StudentTwo/StudentTwo';
+
 import { 
-  TextField,
-  withStyles,
   Button
 } from "@material-ui/core";
 import './App.css';
-
-const CustomTextField = withStyles({
-  root: {
-    margin: "10px 10px",
-    variant: "outlined",
-    "& .MuiInputBase-root.Mui-disabled": {
-      color: "black"
-    },
-    "& .MuiFormLabel-root.Mui-disabled": {
-      color: "black"
-    }
-  }
-})(TextField);
 
 class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      players: [],
+      students: [],
       dialogOpen: false,
       dialogMessage: "",
-      playerOne: new Player(),
-      playerTwo: new Player(),
+      studentOne: new Student(),
+      studentTwo: new Student(),
       firstRandomNum: null,
       secondRandomNum: null,
-      winner: new Player()
+      winner: new Student(),
+      disabled: false
     }
 
     this.handleCompeteClick = this.handleCompeteClick.bind(this);
+    this.handleRandomizeClick = this.handleRandomizeClick.bind(this);
   }
 
   componentDidMount() {
     let endPoint = `https://jsonplaceholder.typicode.com/users`;
     
-    this.setState({dialogOpen: true, dialogMessage: "Getting players"}, async () => {
+    this.setState({dialogOpen: true, dialogMessage: "Getting students"}, async () => {
       try {
         let result = await axios ({
           url: `${endPoint}`,
           method: "GET"
         });
-        result.data.forEach(async (player) => {
-          let newPlayer = new Player(player);
-          await this.setState({players: [...this.state.players, newPlayer]});
+        result.data.forEach(async (student) => {
+          let newStudent = new Student(student);
+          await this.setState({students: [...this.state.students, newStudent]});
         });
-        this.randomizePlayers(true, true);
+        this.randomizeStudent(true, true);
         this.setState({dialogOpen: false});
       } catch (error) {
-        console.log(`Error getting users. ${error}`)
+        console.log(`Error getting students. ${error}`)
       }
     });
   }
 
-  randomizePlayers(playerOne, playerTwo) {
-    let {players} = this.state;
-    let playersALen = players.length;
+  handleRandomizeClick (event) {
+    // True === studentOne, False === studentTwo
+    let studentToRandomize = event.currentTarget.value;
+    studentToRandomize === "one" ? this.randomizeStudent(true, false) : this.randomizeStudent(false, true);
+  }
 
-    if(playerOne && playerTwo) {
+  async randomizeStudent(sOne, sTwo) {
+    let { students, firstRandomNum, secondRandomNum } = this.state;
+    let studentsALen = students.length;
+    let firstNum, secondNum = null;
+
+    await this.setState({
+      dialogOpen: true,
+      dialogMessage: "Randomizing students",
+      disabled: true
+    });
+
+    if(sOne && sTwo) {
       // generate two random number 
-      let firstNum  = randomizer(0, playersALen - 1, 1);
-      let secondNum = randomizer(0, playersALen - 2, 1);
+      firstNum  = randomizer(0, studentsALen - 1, 1);
+      secondNum = randomizer(0, studentsALen - 2, 1);
 
       // Ensure no same two random number
       if (secondNum >= firstNum) ++secondNum;
 
-      this.setState({
+      await this.setState({
         firstRandomNum: firstNum,
-        secondRandomNum: secondNum
-      }, async () => {
-        await this.setState({
-          playerOne: players[this.state.firstRandomNum],
-          playerTwo: players[this.state.secondRandomNum]
-        });
+        secondRandomNum: secondNum,
+        studentOne: students[firstNum],
+        studentTwo: students[secondNum]
       });
-    } else if (playerOne) {
-      // set up playerOne for random btn
+
+    } else if (sOne) {
+      // Randomizing first student
+
+      firstNum = firstRandomNum;
+      secondNum = secondRandomNum;
+      let newFirstNum  = randomizer(0, studentsALen - 3, 1);
+
+      if(newFirstNum >= secondNum) ++newFirstNum;
+      if(newFirstNum >= firstNum) ++newFirstNum;
+
+      await this.setState({studentOne: students[newFirstNum]});
+
     } else {
-      // set up playerTwo for random btn
+      // Randomizing second student
+
+      firstNum = firstRandomNum;
+      secondNum = secondRandomNum;
+      let newSecondNum  = randomizer(0, studentsALen - 3, 1);
+
+      if(newSecondNum >= firstNum) ++newSecondNum;
+      if(newSecondNum >= secondNum) ++newSecondNum;
+
+      await this.setState({studentTwo: students[newSecondNum]});
     }
+
+    this.setState({
+      dialogOpen: false, 
+      disabled: false
+    });
   }
 
   handleCompeteClick () {
-    let { playerOne, playerTwo } = this.state;
+    let { studentOne, studentTwo } = this.state;
 
     this.setState({dialogOpen: true, dialogMessage: "Deciding Winner!"}, async () => {
-      let playerOneHP = playerOne.HP;
-      let playerTwoHP = playerTwo.HP;
+      let studentOneHP = studentOne.HP;
+      let studentTwoHP = studentTwo.HP;
     
-      let playerOneDPS = playerOne.DPS;
-      let playerTwoDPS = playerTwo.DPS;
+      let studentOneDPS = studentOne.DPS;
+      let studentTwoDPS = studentTwo.DPS;
   
-      let playerOneCheerTime = Math.floor((playerOneHP/playerTwoDPS) * -1);
-      let playerTwoCheerTime = Math.floor((playerTwoHP/playerOneDPS) * -1);
+      let studentOneCheerTime = Math.floor((studentOneHP/studentTwoDPS) * -1);
+      let studentTwoCheerTime = Math.floor((studentTwoHP/studentOneDPS) * -1);
     
-      if(playerOneCheerTime === playerTwoCheerTime) {
+      if(studentOneCheerTime === studentTwoCheerTime) {
         await this.setState({ winner: null });
       } else {
-        await this.setState({ winner: playerOneCheerTime > playerTwoCheerTime ? playerTwo : playerOne })
+        await this.setState({ winner: studentOneCheerTime > studentTwoCheerTime ? studentTwo : studentOne })
       }
       await this.setState({dialogOpen: false});
     });
   }
 
   render () {
-    const {dialogOpen, dialogMessage, playerOne, playerTwo} = this.state;
+    const {dialogOpen, dialogMessage, studentOne, studentTwo, disabled} = this.state;
 
     return (
       
@@ -121,74 +146,43 @@ class App extends React.Component {
 
         <div className="battle-ground">
 
-          <div className="player-one">
-            
-            <span>Player One</span>
-              
-            <CustomTextField
-              disabled
-              id="outlined-read-only-p1name"
-              label="Name"
-              value={playerOne.name}
-            />
-
-            <CustomTextField
-              disabled
-              id="outlined-read-only-p1HP"
-              label="HP"
-              variant="outlined"
-              value={playerOne.HP}
-            />
-
-            <CustomTextField
-              disabled
-              id="outlined-read-only-p1DPS"
-              label="DPS"
-              variant="outlined"
-              value={playerOne.DPS}
-            />
+          <div>
+            <StudentOne studentOne={studentOne}/>
+            <Button 
+              disabled={disabled}
+              variant="contained" 
+              color="primary"
+              value="one"
+              onClick={this.handleRandomizeClick}
+            >
+              Randomize!
+            </Button>
           </div>
-
+          
           <div className="compete-btn">
-          <Button 
-            variant="contained" 
-            color="secondary"
-            onClick={this.handleCompeteClick}
-          >
-            Compete!
-          </Button>
+            <Button
+              disabled={disabled}
+              variant="contained" 
+              color="secondary"
+              onClick={this.handleCompeteClick}
+            >
+              Compete!
+            </Button>
           </div>
 
-          <div className="player-two">
-
-            <span>Player Two</span>
-
-            <CustomTextField
-              disabled
-              id="outlined-read-only-p2name"
-              label="Name"
-              value={playerTwo.name}
-            />
-
-            <CustomTextField
-              disabled
-              id="outlined-read-only-p2HP"
-              label="HP"
-              variant="outlined"
-              value={playerTwo.HP}
-            />
-            
-            <CustomTextField
-              disabled
-              id="outlined-read-only-p2DPS"
-              label="DPS"
-              variant="outlined"
-              value={playerTwo.DPS}
-            />      
+          <div>
+            <StudentTwo studentTwo={studentTwo}/>
+            <Button
+              disabled={disabled}
+              variant="contained" 
+              color="primary"
+              value="two"
+              onClick={this.handleRandomizeClick}
+            >
+              Randomize!
+            </Button>
           </div>
-
         </div>
-
       </div>
     )
   }
