@@ -23,14 +23,15 @@
   color: black;
 }
 
-.player-one {
-  margin: auto;
+.player-one, .player-two {
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 10px;
 }
 
 .compete-btn {
-  margin: auto;
-}
-
-.player-two {
   margin: auto;
 }

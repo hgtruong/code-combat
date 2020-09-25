@@ -3,7 +3,25 @@ import axios from 'axios';
 import Player from '../models/Player'
 import DialogSpinner from '../utils/dialogSpinner';
 import randomizer from '../utils/randomizer';
+import { 
+  TextField,
+  withStyles,
+  Button
+} from "@material-ui/core";
 import './App.css';
+
+const CustomTextField = withStyles({
+  root: {
+    margin: "10px 10px",
+    variant: "outlined",
+    "& .MuiInputBase-root.Mui-disabled": {
+      color: "black"
+    },
+    "& .MuiFormLabel-root.Mui-disabled": {
+      color: "black"
+    }
+  }
+})(TextField);
 
 class App extends React.Component {
   constructor() {
@@ -12,11 +30,14 @@ class App extends React.Component {
       players: [],
       dialogOpen: false,
       dialogMessage: "",
-      playerOne: null,
-      playerTwo: null,
+      playerOne: new Player(),
+      playerTwo: new Player(),
       firstRandomNum: null,
-      secondRandomNum: null
+      secondRandomNum: null,
+      winner: new Player()
     }
+
+    this.handleCompeteClick = this.handleCompeteClick.bind(this);
   }
 
   componentDidMount() {
@@ -62,14 +83,36 @@ class App extends React.Component {
         });
       });
     } else if (playerOne) {
-      // set up playerOne
+      // set up playerOne for random btn
     } else {
-      // set up playerTwo
+      // set up playerTwo for random btn
     }
   }
 
+  handleCompeteClick () {
+    let { playerOne, playerTwo } = this.state;
+
+    this.setState({dialogOpen: true, dialogMessage: "Deciding Winner!"}, async () => {
+      let playerOneHP = playerOne.HP;
+      let playerTwoHP = playerTwo.HP;
+    
+      let playerOneDPS = playerOne.DPS;
+      let playerTwoDPS = playerTwo.DPS;
+  
+      let playerOneCheerTime = Math.floor((playerOneHP/playerTwoDPS) * -1);
+      let playerTwoCheerTime = Math.floor((playerTwoHP/playerOneDPS) * -1);
+    
+      if(playerOneCheerTime === playerTwoCheerTime) {
+        await this.setState({ winner: null });
+      } else {
+        await this.setState({ winner: playerOneCheerTime > playerTwoCheerTime ? playerTwo : playerOne })
+      }
+      await this.setState({dialogOpen: false});
+    });
+  }
+
   render () {
-    const {dialogOpen, dialogMessage} = this.state;
+    const {dialogOpen, dialogMessage, playerOne, playerTwo} = this.state;
 
     return (
       
@@ -79,17 +122,69 @@ class App extends React.Component {
         <div className="battle-ground">
 
           <div className="player-one">
-            Player One
+            
+            <span>Player One</span>
+              
+            <CustomTextField
+              disabled
+              id="outlined-read-only-p1name"
+              label="Name"
+              value={playerOne.name}
+            />
 
+            <CustomTextField
+              disabled
+              id="outlined-read-only-p1HP"
+              label="HP"
+              variant="outlined"
+              value={playerOne.HP}
+            />
 
+            <CustomTextField
+              disabled
+              id="outlined-read-only-p1DPS"
+              label="DPS"
+              variant="outlined"
+              value={playerOne.DPS}
+            />
           </div>
 
           <div className="compete-btn">
-            compete-btn
+          <Button 
+            variant="contained" 
+            color="secondary"
+            onClick={this.handleCompeteClick}
+          >
+            Compete!
+          </Button>
           </div>
 
           <div className="player-two">
-            Player Two
+
+            <span>Player Two</span>
+
+            <CustomTextField
+              disabled
+              id="outlined-read-only-p2name"
+              label="Name"
+              value={playerTwo.name}
+            />
+
+            <CustomTextField
+              disabled
+              id="outlined-read-only-p2HP"
+              label="HP"
+              variant="outlined"
+              value={playerTwo.HP}
+            />
+            
+            <CustomTextField
+              disabled
+              id="outlined-read-only-p2DPS"
+              label="DPS"
+              variant="outlined"
+              value={playerTwo.DPS}
+            />      
           </div>
 
         </div>
