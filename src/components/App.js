@@ -3,25 +3,11 @@ import axios from 'axios';
 import Player from '../models/Player'
 import DialogSpinner from '../utils/dialogSpinner';
 import randomizer from '../utils/randomizer';
+import CustomTextField from './CustomTextField';
 import { 
-  TextField,
-  withStyles,
   Button
 } from "@material-ui/core";
 import './App.css';
-
-const CustomTextField = withStyles({
-  root: {
-    margin: "10px 10px",
-    variant: "outlined",
-    "& .MuiInputBase-root.Mui-disabled": {
-      color: "black"
-    },
-    "& .MuiFormLabel-root.Mui-disabled": {
-      color: "black"
-    }
-  }
-})(TextField);
 
 class App extends React.Component {
   constructor() {
@@ -186,9 +172,7 @@ class App extends React.Component {
               value={playerTwo.DPS}
             />      
           </div>
-
         </div>
-
       </div>
     )
   }
