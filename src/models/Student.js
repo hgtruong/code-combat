@@ -8,7 +8,6 @@ class Student {
     this.userName = data.username || "";
     this.HP = randomizer(-100,-10,5);
     this.DPS = randomizer(1, 10,5);
-    this.studentUsed = false;
   }
 }
 
