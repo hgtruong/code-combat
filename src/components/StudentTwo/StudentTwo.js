@@ -1,37 +1,37 @@
 import CustomTextField from '../CustomTextField';
 import React from 'react';
 
-const PlayerTwo = (props) => {
-  const { playerTwo } = props;
+const StudentTwo = (props) => {
+  const { studentTwo } = props;
 
   return (
-    <div className="player-two">
-      <span>Player Two</span>
+    <div className="student-two">
+      <span>Student Two</span>
 
       <CustomTextField
         disabled
-        id="outlined-read-only-p2name"
+        id="outlined-read-only-s2name"
         label="Name"
-        value={playerTwo.name}
+        value={studentTwo.name}
       />
 
       <CustomTextField
         disabled
-        id="outlined-read-only-p2HP"
+        id="outlined-read-only-s2HP"
         label="HP"
         variant="outlined"
-        value={playerTwo.HP}
+        value={studentTwo.HP}
       />
 
       <CustomTextField
         disabled
-        id="outlined-read-only-p2DPS"
+        id="outlined-read-only-s2DPS"
         label="DPS"
         variant="outlined"
-        value={playerTwo.DPS}
+        value={studentTwo.DPS}
       />
     </div>
   )
 }
 
-export default PlayerTwo;
+export default StudentTwo;

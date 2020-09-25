@@ -1,10 +1,10 @@
 import React from 'react';
 import axios from 'axios';
-import Player from '../models/Player'
+import Student from '../models/Student'
 import DialogSpinner from '../utils/dialogSpinner';
 import randomizer from '../utils/randomizer';
-import PlayerOne from './PlayerOne/PlayerOne';
-import PlayerTwo from './PlayerTwo/PlayerTwo';
+import StudentOne from './StudentOne/StudentOne';
+import StudentTwo from './StudentTwo/StudentTwo';
 
 import { 
   Button
@@ -15,14 +15,14 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      players: [],
+      students: [],
       dialogOpen: false,
       dialogMessage: "",
-      playerOne: new Player(),
-      playerTwo: new Player(),
+      studentOne: new Student(),
+      studentTwo: new Student(),
       firstRandomNum: null,
       secondRandomNum: null,
-      winner: new Player()
+      winner: new Student()
     }
 
     this.handleCompeteClick = this.handleCompeteClick.bind(this);
@@ -32,17 +32,17 @@ class App extends React.Component {
   componentDidMount() {
     let endPoint = `https://jsonplaceholder.typicode.com/users`;
     
-    this.setState({dialogOpen: true, dialogMessage: "Getting players"}, async () => {
+    this.setState({dialogOpen: true, dialogMessage: "Getting students"}, async () => {
       try {
         let result = await axios ({
           url: `${endPoint}`,
           method: "GET"
         });
-        result.data.forEach(async (player) => {
-          let newPlayer = new Player(player);
-          await this.setState({players: [...this.state.players, newPlayer]});
+        result.data.forEach(async (student) => {
+          let newStudent = new Student(student);
+          await this.setState({students: [...this.state.students, newStudent]});
         });
-        this.randomizePlayers(true, true);
+        this.randomizeStudent(true, true);
         this.setState({dialogOpen: false});
       } catch (error) {
         console.log(`Error getting users. ${error}`)
@@ -50,15 +50,17 @@ class App extends React.Component {
     });
   }
 
-  randomizePlayers(playerOne, playerTwo) {
-    let {players} = this.state;
-    let playersALen = players.length;
+  //TODO: Work on randomize player clicked
+  //TODO: Need to remove playerUsed properties in player model
+  randomizeStudent(studentOne, studentTwo) {
+    let {students} = this.state;
+    let studentsALen = students.length;
 
-    if(playerOne && playerTwo) {
+    if(studentOne && studentTwo) {
 
       // generate two random number 
-      let firstNum  = randomizer(0, playersALen - 1, 1);
-      let secondNum = randomizer(0, playersALen - 2, 1);
+      let firstNum  = randomizer(0, studentsALen - 1, 1);
+      let secondNum = randomizer(0, studentsALen - 2, 1);
 
       // Ensure no same two random number
       if (secondNum >= firstNum) ++secondNum;
@@ -68,48 +70,48 @@ class App extends React.Component {
         secondRandomNum: secondNum
       }, async () => {
         await this.setState({
-          playerOne: players[this.state.firstRandomNum],
-          playerTwo: players[this.state.secondRandomNum]
+          studentOne: students[this.state.firstRandomNum],
+          studentTwo: students[this.state.secondRandomNum]
         });
       });
-    } else if (playerOne) {
-      // set up playerOne for random btn
+    } else if (studentOne) {
+      // set up studentOne for random btn
     } else {
-      // set up playerTwo for random btn
+      // set up studentTwo for random btn
     }
   }
 
   handleRandomizeClick (event) {
-    // True === playerOne, False === playerTwo
-    let playerToRandomize = event.currentTarget.value;
-    playerToRandomize ? this.randomizePlayers(true, false) : this.randomizePlayers(false, true);
+    // True === studentOne, False === studentTwo
+    let studentToRandomize = event.currentTarget.value;
+    studentToRandomize ? this.randomizeStudent(true, false) : this.randomizeStudent(false, true);
     
   }
 
   handleCompeteClick () {
-    let { playerOne, playerTwo } = this.state;
+    let { studentOne, studentTwo } = this.state;
 
     this.setState({dialogOpen: true, dialogMessage: "Deciding Winner!"}, async () => {
-      let playerOneHP = playerOne.HP;
-      let playerTwoHP = playerTwo.HP;
+      let studentOneHP = studentOne.HP;
+      let studentTwoHP = studentTwo.HP;
     
-      let playerOneDPS = playerOne.DPS;
-      let playerTwoDPS = playerTwo.DPS;
+      let studentOneDPS = studentOne.DPS;
+      let studentTwoDPS = studentTwo.DPS;
   
-      let playerOneCheerTime = Math.floor((playerOneHP/playerTwoDPS) * -1);
-      let playerTwoCheerTime = Math.floor((playerTwoHP/playerOneDPS) * -1);
+      let studentOneCheerTime = Math.floor((studentOneHP/studentTwoDPS) * -1);
+      let studentTwoCheerTime = Math.floor((studentTwoHP/studentOneDPS) * -1);
     
-      if(playerOneCheerTime === playerTwoCheerTime) {
+      if(studentOneCheerTime === studentTwoCheerTime) {
         await this.setState({ winner: null });
       } else {
-        await this.setState({ winner: playerOneCheerTime > playerTwoCheerTime ? playerTwo : playerOne })
+        await this.setState({ winner: studentOneCheerTime > studentTwoCheerTime ? studentTwo : studentOne })
       }
       await this.setState({dialogOpen: false});
     });
   }
 
   render () {
-    const {dialogOpen, dialogMessage, playerOne, playerTwo} = this.state;
+    const {dialogOpen, dialogMessage, studentOne, studentTwo} = this.state;
 
     return (
       
@@ -119,7 +121,7 @@ class App extends React.Component {
         <div className="battle-ground">
 
           <div>
-            <PlayerOne playerOne={playerOne}/>
+            <StudentOne studentOne={studentOne}/>
             <Button 
               variant="contained" 
               color="primary"
@@ -141,7 +143,7 @@ class App extends React.Component {
           </div>
 
           <div>
-            <PlayerTwo playerTwo={playerTwo}/>
+            <StudentTwo studentTwo={studentTwo}/>
             <Button 
               variant="contained" 
               color="primary"
