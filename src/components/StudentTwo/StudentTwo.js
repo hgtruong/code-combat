@@ -1,4 +1,4 @@
-import CustomTextField from '../CustomTextField';
+import CustomTextField from '../CustomFields/CustomTextField';
 import React from 'react';
 
 const StudentTwo = (props) => {
