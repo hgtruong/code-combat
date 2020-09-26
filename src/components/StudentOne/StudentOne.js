@@ -2,7 +2,6 @@ import CustomTextField from '../CustomFields/CustomTextField';
 import React from 'react';
 import './StudentOne.css';
 
-
 const studentOne = (props) => {
   const { studentOne } = props;
 
