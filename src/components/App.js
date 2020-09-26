@@ -58,8 +58,17 @@ class App extends React.Component {
   }
 
   handleRandomizeClick (event) {
+    const { studentOne, studentTwo } = this.state;
     // True === studentOne, False === studentTwo
     let studentToRandomize = event.currentTarget.value;
+
+    this.setState({
+      dialogOpen: true,
+      dialogMessage: "Deciding Winner!",
+      studentOne: {...studentOne, winner: false},
+      studentTwo: {...studentTwo, winner: false}
+    });
+
     studentToRandomize === "one" ? this.randomizeStudent(true, false) : this.randomizeStudent(false, true);
   }
 
@@ -79,7 +88,7 @@ class App extends React.Component {
       firstNum  = randomizer(0, studentsALen - 1, 1);
       secondNum = randomizer(0, studentsALen - 2, 1);
 
-      // Ensure no same two random number
+      // No same two random number
       if (secondNum >= firstNum) ++secondNum;
 
       await this.setState({
@@ -129,7 +138,7 @@ class App extends React.Component {
       dialogMessage: "Deciding Winner!",
       studentOne: {...studentOne, winner: false},
       studentTwo: {...studentTwo, winner: false}
-      }, async () => {
+    }, async () => {
       let studentOneHP = studentOne.HP;
       let studentTwoHP = studentTwo.HP;
     
@@ -157,7 +166,7 @@ class App extends React.Component {
   }
 
   render () {
-    const {dialogOpen, dialogMessage, studentOne, studentTwo, isDisabled} = this.state;
+    const {dialogOpen, dialogMessage, studentOne, studentTwo, isDisabled, isTie} = this.state;
 
     return (
       
@@ -181,19 +190,25 @@ class App extends React.Component {
           
           <div className="compete-btn">
             <div>
-              { studentOne.winner ? 
-                <ArrowBack
-                  style={{
-                    fontSize: 50
-                  }}
-                
-                />
-                :
-                <ArrowForward
-                  style={{
-                    fontSize: 50
-                  }}
-                />
+              { !studentOne.winner && !studentTwo.winner ?
+                  null
+                  :
+                  isTie ? 
+                    "TIE"
+                    : 
+                    studentOne.winner ?
+                      <ArrowBack
+                        style={{
+                          fontSize: 50
+                        }}
+                      
+                      />
+                      :
+                      <ArrowForward
+                        style={{
+                          fontSize: 50
+                        }}
+                      />
               }
             </div>
             
