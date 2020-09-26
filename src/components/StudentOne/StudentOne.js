@@ -1,12 +1,13 @@
 import CustomTextField from '../CustomFields/CustomTextField';
 import React from 'react';
+import './StudentOne.css';
 
 const studentOne = (props) => {
   const { studentOne } = props;
 
   return (
     <div className="student-one">
-      <span>Student One</span>
+      <span>{studentOne.winner ? "WINNER!" : "Student One"}</span>
         
       <CustomTextField
         disabled
