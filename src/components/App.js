@@ -6,9 +6,15 @@ import randomizer from '../utils/randomizer';
 import StudentOne from './StudentOne/StudentOne';
 import StudentTwo from './StudentTwo/StudentTwo';
 
-import { 
+import {
   Button
-} from "@material-ui/core";
+} from '@material-ui/core';
+
+import {
+  ArrowForward,
+  ArrowBack
+} from '@material-ui/icons';
+
 import './App.css';
 
 class App extends React.Component {
@@ -22,8 +28,8 @@ class App extends React.Component {
       studentTwo: new Student(),
       firstRandomNum: null,
       secondRandomNum: null,
-      winner: new Student(),
-      disabled: false
+      isTie: false,
+      isDisabled: false
     }
 
     this.handleCompeteClick = this.handleCompeteClick.bind(this);
@@ -65,7 +71,7 @@ class App extends React.Component {
     await this.setState({
       dialogOpen: true,
       dialogMessage: "Randomizing students",
-      disabled: true
+      isDisabled: true
     });
 
     if(sOne && sTwo) {
@@ -110,14 +116,20 @@ class App extends React.Component {
 
     this.setState({
       dialogOpen: false, 
-      disabled: false
+      isDisabled: false
     });
   }
 
+  // TODO: show isTie
   handleCompeteClick () {
     let { studentOne, studentTwo } = this.state;
 
-    this.setState({dialogOpen: true, dialogMessage: "Deciding Winner!"}, async () => {
+    this.setState({
+      dialogOpen: true,
+      dialogMessage: "Deciding Winner!",
+      studentOne: {...studentOne, winner: false},
+      studentTwo: {...studentTwo, winner: false}
+      }, async () => {
       let studentOneHP = studentOne.HP;
       let studentTwoHP = studentTwo.HP;
     
@@ -128,16 +140,24 @@ class App extends React.Component {
       let studentTwoCheerTime = Math.floor((studentTwoHP/studentOneDPS) * -1);
     
       if(studentOneCheerTime === studentTwoCheerTime) {
-        await this.setState({ winner: null });
+        await this.setState({ isTie: null });
       } else {
-        await this.setState({ winner: studentOneCheerTime > studentTwoCheerTime ? studentTwo : studentOne })
+        if(studentOneCheerTime > studentTwoCheerTime) {
+          await this.setState({ 
+            studentTwo: {...studentTwo, winner: true} 
+         });
+        } else {
+          await this.setState({ 
+            studentOne: {...studentOne, winner: true} 
+         });
+        }
       }
       await this.setState({dialogOpen: false});
     });
   }
 
   render () {
-    const {dialogOpen, dialogMessage, studentOne, studentTwo, disabled} = this.state;
+    const {dialogOpen, dialogMessage, studentOne, studentTwo, isDisabled} = this.state;
 
     return (
       
@@ -149,7 +169,7 @@ class App extends React.Component {
           <div>
             <StudentOne studentOne={studentOne}/>
             <Button 
-              disabled={disabled}
+              disabled={isDisabled}
               variant="contained" 
               color="primary"
               value="one"
@@ -160,20 +180,38 @@ class App extends React.Component {
           </div>
           
           <div className="compete-btn">
-            <Button
-              disabled={disabled}
-              variant="contained" 
-              color="secondary"
-              onClick={this.handleCompeteClick}
-            >
-              Compete!
-            </Button>
+            <div>
+              { studentOne.winner ? 
+                <ArrowBack
+                  style={{
+                    fontSize: 50
+                  }}
+                
+                />
+                :
+                <ArrowForward
+                  style={{
+                    fontSize: 50
+                  }}
+                />
+              }
+            </div>
+            
+              <Button
+                disabled={isDisabled}
+                variant="contained" 
+                color="secondary"
+                size="large"
+                onClick={this.handleCompeteClick}
+              >
+                Compete!
+              </Button>
           </div>
 
           <div>
             <StudentTwo studentTwo={studentTwo}/>
             <Button
-              disabled={disabled}
+              disabled={isDisabled}
               variant="contained" 
               color="primary"
               value="two"

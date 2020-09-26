@@ -6,7 +6,8 @@ const StudentTwo = (props) => {
 
   return (
     <div className="student-two">
-      <span>Student Two</span>
+      <span>{studentTwo.winner ? "WINNER!" : "Student Two"}</span>
+
 
       <CustomTextField
         disabled
