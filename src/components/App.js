@@ -5,17 +5,8 @@ import DialogSpinner from '../utils/dialogSpinner';
 import randomizer from '../utils/randomizer';
 import StudentOne from './StudentOne/StudentOne';
 import StudentTwo from './StudentTwo/StudentTwo';
-
-import {
-  Button
-} from '@material-ui/core';
-
-import {
-  ArrowForward,
-  ArrowBack
-} from '@material-ui/icons';
-
 import './App.css';
+import { Button } from '@material-ui/core';
 
 class App extends React.Component {
   constructor() {
@@ -65,6 +56,7 @@ class App extends React.Component {
     this.setState({
       dialogOpen: true,
       dialogMessage: "Deciding Winner!",
+      isTie: false,
       studentOne: {...studentOne, winner: false},
       studentTwo: {...studentTwo, winner: false}
     });
@@ -103,10 +95,7 @@ class App extends React.Component {
 
       firstNum = firstRandomNum;
       secondNum = secondRandomNum;
-      let newFirstNum  = randomizer(0, studentsALen - 3, 1);
-
-      if(newFirstNum >= secondNum) ++newFirstNum;
-      if(newFirstNum >= firstNum) ++newFirstNum;
+      let newFirstNum  = randomizer(0, studentsALen - 1, 1);
 
       await this.setState({studentOne: students[newFirstNum]});
 
@@ -115,10 +104,7 @@ class App extends React.Component {
 
       firstNum = firstRandomNum;
       secondNum = secondRandomNum;
-      let newSecondNum  = randomizer(0, studentsALen - 3, 1);
-
-      if(newSecondNum >= firstNum) ++newSecondNum;
-      if(newSecondNum >= secondNum) ++newSecondNum;
+      let newSecondNum  = randomizer(0, studentsALen - 1, 1);
 
       await this.setState({studentTwo: students[newSecondNum]});
     }
@@ -129,7 +115,6 @@ class App extends React.Component {
     });
   }
 
-  // TODO: show isTie
   handleCompeteClick () {
     let { studentOne, studentTwo } = this.state;
 
@@ -149,7 +134,8 @@ class App extends React.Component {
       let studentTwoCheerTime = Math.floor((studentTwoHP/studentOneDPS) * -1);
     
       if(studentOneCheerTime === studentTwoCheerTime) {
-        await this.setState({ isTie: null });
+        console.log('in here')
+        await this.setState({ isTie: true });
       } else {
         if(studentOneCheerTime > studentTwoCheerTime) {
           await this.setState({ 
@@ -189,27 +175,8 @@ class App extends React.Component {
           </div>
           
           <div className="compete-btn">
-            <div>
-              { !studentOne.winner && !studentTwo.winner ?
-                  null
-                  :
-                  isTie ? 
-                    "TIE"
-                    : 
-                    studentOne.winner ?
-                      <ArrowBack
-                        style={{
-                          fontSize: 50
-                        }}
-                      
-                      />
-                      :
-                      <ArrowForward
-                        style={{
-                          fontSize: 50
-                        }}
-                      />
-              }
+            <div style={{color: 'red', margin: '10px 10px'}}>
+              { isTie ? "TIE!" : ""}
             </div>
             
               <Button
