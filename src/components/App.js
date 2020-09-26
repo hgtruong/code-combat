@@ -134,7 +134,6 @@ class App extends React.Component {
       let studentTwoCheerTime = Math.floor((studentTwoHP/studentOneDPS) * -1);
     
       if(studentOneCheerTime === studentTwoCheerTime) {
-        console.log('in here')
         await this.setState({ isTie: true });
       } else {
         if(studentOneCheerTime > studentTwoCheerTime) {
