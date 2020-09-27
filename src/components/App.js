@@ -232,8 +232,17 @@ class App extends React.Component {
           </div>
           
           <div className="compete-btn">
-            <div style={{color: 'red', margin: '10px 10px'}}>
+            <div style={{color: 'blue', margin: '45px 10px'}}>
               { isTie ? "TIE!" : ""}
+              { 
+                `${ !studentOne.winner && !studentTwo.winner ? 
+                           '' : 
+                           `Winner:
+                            ${studentOne.winner ? 
+                                studentOne.name :
+                                studentTwo.name}`
+                }`
+              }
             </div>
             
               <Button
