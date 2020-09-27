@@ -1,5 +1,5 @@
 const APIKeys = {
-  USPS_USER_ID: "YOUR_KEY_HERE"
+  API_KEY_NAME: "YOUR_KEY_HERE"
 }
 
 module.exports = APIKeys;
