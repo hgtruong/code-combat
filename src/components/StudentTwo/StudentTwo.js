@@ -7,8 +7,14 @@ const StudentTwo = (props) => {
 
   return (
     <div className="student-two">
-      <span>{studentTwo.winner ? "WINNER!" : "Student Two"}</span>
-
+      <div>
+        {
+          studentTwo.winner ? 
+          <span style={{color: 'blue'}}> WINNER! </span>
+          :
+          "Student Two"
+        }
+      </div>
 
       <CustomTextField
         disabled
