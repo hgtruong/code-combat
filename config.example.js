@@ -1,5 +1,5 @@
-const APIKeys = {
+const API_KEYS = {
   API_KEY_NAME: "YOUR_KEY_HERE"
 }
 
-module.exports = APIKeys;
+module.exports = API_KEYS;
