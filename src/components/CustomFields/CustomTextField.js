@@ -6,7 +6,9 @@ import './CustomTextField.css';
 
 const CustomTextField = withStyles({
   root: {
-    margin: "10px 10px",
+    margin: "15px 15px",
+    width: "100%",
+    height: "100%",
     variant: "outlined",
     "& .MuiInputBase-root.Mui-disabled": {
       color: "black"
