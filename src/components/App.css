@@ -10,7 +10,7 @@
 
 .battle-ground {
   background-color: white;
-  width: 80%;
+  min-width: 80%;
   height: auto;
   margin: 0 auto;
   padding: 10px;
