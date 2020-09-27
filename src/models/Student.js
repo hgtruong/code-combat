@@ -9,6 +9,7 @@ class Student {
     this.HP = randomizer(-100,-10,5);
     this.DPS = randomizer(1, 10,5);
     this.winner = false;
+    this.pictureUrl = data.pictureUrl || "";
   }
 }
 
