@@ -4,7 +4,7 @@
 
 - Link to application: [https://sleepy-hodgkin-ba6124.netlify.app/](http://localhost:3000) 
 
-- To build and run locally: 
+### To build and run locally: 
 
 #### For MacOS: 
 
