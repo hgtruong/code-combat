@@ -16,6 +16,10 @@ const studentOne = (props) => {
         value={studentOne.name}
       />
 
+      <img className="s1-pic" alt='s1-pic'
+        src={studentOne.pictureUrl} 
+      />
+
       <CustomTextField
         disabled
         id="outlined-read-only-s1HP"

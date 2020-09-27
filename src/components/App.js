@@ -28,24 +28,81 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    let endPoint = `https://jsonplaceholder.typicode.com/users`;
-    
-    this.setState({dialogOpen: true, dialogMessage: "Getting students"}, async () => {
+    let usersEndPoint = `https://jsonplaceholder.typicode.com/users`;
+
+    this.setState({dialogOpen: true, dialogMessage: "Setting Up!"}, async () => {
       try {
         let result = await axios ({
-          url: `${endPoint}`,
+          url: `${usersEndPoint}`,
           method: "GET"
         });
+        
         result.data.forEach(async (student) => {
           let newStudent = new Student(student);
           await this.setState({students: [...this.state.students, newStudent]});
         });
+
         this.randomizeStudent(true, true);
         this.setState({dialogOpen: false});
       } catch (error) {
         console.log(`Error getting students. ${error}`)
       }
     });
+  }
+
+  assignStudentPic (studentToBeAssigned) {
+    let pictureEndPoint = `https://api.thecatapi.com/v1/images/search`;
+    const { studentOne, studentTwo } = this.state;
+
+    if (studentToBeAssigned === "One") {
+      // Get 1st student picture
+      let studentOnePic = axios ({
+        url: `${pictureEndPoint}`,
+        method: "GET",
+      });
+
+      studentOnePic.then((result) => {
+        let s1Url = result.data[0].url;
+        studentOne.pictureUrl = s1Url;
+        this.setState({ studentOne });
+      });
+    } else if (studentToBeAssigned === "Two") {
+      // Get second student picture
+      let studentTwoPic = axios ({
+        url: `${pictureEndPoint}`,
+        method: "GET",
+      });
+
+      studentTwoPic.then((result) => {
+        let s2Url = result.data[0].url;
+        studentTwo.pictureUrl = s2Url;
+        this.setState({ studentTwo });
+      });
+    } else {
+      // Get 1st student picture
+      let studentOnePic = axios ({
+        url: `${pictureEndPoint}`,
+        method: "GET",
+      });
+
+      studentOnePic.then((result) => {
+        let s1Url = result.data[0].url;
+        studentOne.pictureUrl = s1Url;
+        this.setState({ studentOne });
+      });
+
+      // Get second student picture
+      let studentTwoPic = axios ({
+        url: `${pictureEndPoint}`,
+        method: "GET",
+      });
+
+      studentTwoPic.then((result) => {
+        let s2Url = result.data[0].url;
+        studentTwo.pictureUrl = s2Url;
+        this.setState({ studentTwo });
+      });
+    }
   }
 
   handleRandomizeClick (event) {
@@ -90,23 +147,25 @@ class App extends React.Component {
         studentTwo: students[secondNum]
       });
 
+      this.assignStudentPic();
+
     } else if (sOne) {
       // Randomizing first student
-
       firstNum = firstRandomNum;
       secondNum = secondRandomNum;
       let newFirstNum  = randomizer(0, studentsALen - 1, 1);
 
       await this.setState({studentOne: students[newFirstNum]});
+      this.assignStudentPic("One");
 
     } else {
       // Randomizing second student
-
       firstNum = firstRandomNum;
       secondNum = secondRandomNum;
       let newSecondNum  = randomizer(0, studentsALen - 1, 1);
 
       await this.setState({studentTwo: students[newSecondNum]});
+      this.assignStudentPic("Two");
     }
 
     this.setState({
@@ -117,7 +176,7 @@ class App extends React.Component {
 
   handleCompeteClick () {
     let { studentOne, studentTwo } = this.state;
-
+    
     this.setState({
       dialogOpen: true,
       dialogMessage: "Deciding Winner!",
@@ -154,7 +213,6 @@ class App extends React.Component {
     const {dialogOpen, dialogMessage, studentOne, studentTwo, isDisabled, isTie} = this.state;
 
     return (
-      
       <div className="App">
         <DialogSpinner dialogOpen={dialogOpen} message={dialogMessage}/>
 
