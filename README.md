@@ -2,7 +2,7 @@
 
 #### This application allows students to compete with HP/DPS.
 
-- Link to application: [https://sleepy-hodgkin-ba6124.netlify.app/](http://localhost:3000) 
+- Link to application: [https://sleepy-hodgkin-ba6124.netlify.app/](https://sleepy-hodgkin-ba6124.netlify.app/) 
 
 ### To build and run locally: 
 
